@@ -124,6 +124,7 @@ Vue.component('product', {
     template:   `
         <div id="product-view">
             <button @click="prevProduct()">Prev</button>
+            {{ productIndex+1 }}
             <button @click="nextProduct()">Next</button>
             <div class="product__view" v-if="product">
                 <div class="product__image__wrap">
@@ -144,7 +145,7 @@ Vue.component('product', {
                             @mouseover="updateProductVariant(variant)">
                         </li>
                     </ul>
-                    <p>Price : £{{ product.price }}</p>
+                    <p>Price : &#163;{{ product.price }}</p>
                     <p>Stock : {{ stock }}</p>
 
                     <button v-on:click="addToCart()">increment</button>
@@ -169,17 +170,21 @@ Vue.component('product', {
         this.image   = products[this.productIndex].variants[0].img;
         this.stock   = products[this.productIndex].variants[0].stock;
         this.color   = products[this.productIndex].variants[0].color;
+        console.log('tffa',this.color)
     },
     methods: {
         addToCart() {
             this.cart++;
             this.stock--;
-            
-            let index = products[this.productIndex].variants.indexOf(this.color);
-            console.log(products[this.productIndex].variants[0]);
-            products[this.productIndex].variants[index].stock--;
-            
-            console.log(products[this.productIndex]);
+            let dis = this;
+            let index;
+            products[dis.productIndex].variants.find(function(variant) {
+                if(variant.color == dis.color) {
+                    index = products[dis.productIndex].variants.indexOf(variant);
+                }
+            })
+            products[dis.productIndex].variants[index].stock--;
+            this.product = products[this.productIndex];
         },
         updateProductVariant(variant) {
             this.image = variant.img;

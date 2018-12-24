@@ -1,7 +1,7 @@
 
-var query = 'something'
+// var query = 'something'
 
-fetch(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=GkCKerLay5i7Vqx2sYJOiSE5dGvyGYfU&limit=5`)
+// fetch(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=GkCKerLay5i7Vqx2sYJOiSE5dGvyGYfU&limit=5`)
 
 
 
@@ -10,54 +10,71 @@ fetch(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=GkCKerLay5i7Vqx2sY
 
 Vue.component('temp',{
     template : `
-        <div>
-            <input type="text" v-model="input" @keyup="updateSearch()" />
-            <div id="display">
-                <div v-if="this.images">
-                    <img crossorigin="anonymous" v-for="image in images" v-bind:src="image" />
+    <div>
+        <input type="text" v-model="input" @keyup="updateSearch()" />
+        <div class="container">
+            <div id="display" v-if="this.images">
+                <div class="img-wrap" v-for="image in images">
+                    <img crossorigin="anonymous" v-bind:src="image" @click="addToList" />
                 </div>
-                <button @click="num++">{{num}}</button>
             </div>
-        </div>
+            <div id="list">
+                <div class="img-wrap" v-for="img in list">
+                    <img @click="removeFromList" v-bind:src="img" />
+                </div>
+            </div>
+            </div>
+        <button @click="num++">{{num}}</button>
+    </div>
     `,
     data() {
         return {
             input : '',
             data: null,
             images: [],
-            num:0
+            num: 10,
+            list: []
         }
     },
     created() {
-        // this.images=['hello','world'];
         let x  = this;
-        fetch(`https://api.giphy.com/v1/gifs/search?q=hello&api_key=GkCKerLay5i7Vqx2sYJOiSE5dGvyGYfU&limit=5`)
+        fetch(`https://api.giphy.com/v1/gifs/search?q=hello&api_key=GkCKerLay5i7Vqx2sYJOiSE5dGvyGYfU&limit=${x.num}`)
             .then(response => response.json())
             .then(function(data) {
-                console.log(this.images);
                 x.data=data.data;
                 x.images = [];
                 x.data.forEach(function(t) {
                     x.images.push(t.images.original.url);
                 })
-                console.log(x.images);
             })
     },
     methods: {
         updateSearch() {
             let x  = this;
-            let query = this.input;
-            fetch(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=GkCKerLay5i7Vqx2sYJOiSE5dGvyGYfU&limit=5`)
+            let query = this.input.replace(' ','_');
+            fetch(`http://api.giphy.com/v1/gifs/search?q=${query}&api_key=GkCKerLay5i7Vqx2sYJOiSE5dGvyGYfU&limit=${x.num}`)
                 .then(response => response.json())
                 .then(function(data) {
-                    console.log(x.images);
+                    // console.log(data);
                     x.data=data.data;
                     x.images = [];
                     x.data.forEach(function(t) {
-                        x.images.push(t.images.original.url);
+                        x.images.push(t.images.downsized.url);
                     })
-                    console.log(x.images);
                 })
+        },
+        addToList(e) {
+            // console.log(e.target.src);
+            this.list.push(e.target.src);
+        },
+        removeFromList(e){
+            if(this.list.length == 1) {
+                this.list.shift();
+            } else if (this.list.indexOf(e.target.src) == 0) {
+                this.list.shift();
+            } else {
+                this.list.splice(this.list.indexOf(e.target.src),this.list.indexOf(e.target.src));
+            }
         }
     }
 });
@@ -67,4 +84,3 @@ new Vue({
 
 })
 
-// 
