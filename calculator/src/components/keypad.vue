@@ -14,7 +14,7 @@
         <button @click="pressOperator('multiply')">*</button>
         <button @click="pressNumber('.')">.</button>
         <button @click="pressNumber(0)">0</button>
-        <button @click="evaluate()" operation="evaluate">=</button>
+        <button @click="evaluate()">=</button>
         <button @click="pressOperator('divide')">/</button>
     </div>
 </template>
@@ -37,7 +37,7 @@ export default {
             this.$emit('operator',operator);
         },
         evaluate() {
-
+            this.$emit('evaluate');
         }
     }
 }

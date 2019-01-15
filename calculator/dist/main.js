@@ -177,15 +177,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************!*\
   !*** ./calculator/src/components/display.vue ***!
   \***********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _display_vue_vue_type_template_id_489a3a63_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./display.vue?vue&type=template&id=489a3a63&scoped=true& */ "./calculator/src/components/display.vue?vue&type=template&id=489a3a63&scoped=true&");
 /* harmony import */ var _display_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./display.vue?vue&type=script&lang=js& */ "./calculator/src/components/display.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _display_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _display_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _display_vue_vue_type_style_index_0_id_489a3a63_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./display.vue?vue&type=style&index=0&id=489a3a63&scoped=true&lang=css& */ "./calculator/src/components/display.vue?vue&type=style&index=0&id=489a3a63&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _display_vue_vue_type_style_index_0_id_489a3a63_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./display.vue?vue&type=style&index=0&id=489a3a63&scoped=true&lang=css& */ "./calculator/src/components/display.vue?vue&type=style&index=0&id=489a3a63&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -217,7 +216,7 @@ component.options.__file = "calculator/src/components/display.vue"
 /*!************************************************************************!*\
   !*** ./calculator/src/components/display.vue?vue&type=script&lang=js& ***!
   \************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -400,17 +399,34 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      number1: '',
-      number2: '',
-      operator: '',
-      decimalPressed: false
+      currentNumber: '',
+      numbers: [],
+      operators: []
     };
   },
   methods: {
     concatNumber: function concatNumber(number) {
-      console.log('at app', number);
-      this.number1 = this.number1 + number.toString();
-      console.log(this.number1);
+      if (number == '.') {
+        if (this.currentNumber.indexOf('.') > -1) {
+          return;
+        } else {
+          this.currentNumber = this.currentNumber + number;
+        }
+      } else {
+        this.currentNumber = this.currentNumber + number.toString();
+      }
+
+      console.log('number: ', this.currentNumber);
+      console.log('index: ', this.currentNumber.indexOf('.'));
+    },
+    addOperator: function addOperator(operator) {
+      this.numbers.push(parseFloat(this.currentNumber));
+      this.operators.push(operator);
+      this.currentNumber = '';
+      console.log(this.numbers);
+    },
+    evaluate: function evaluate() {
+      console.log(this.numbers, this.operators);
     }
   }
 });
@@ -436,8 +452,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "display",
   props: {
-    number1: {
-      type: String
+    numbers: {
+      type: Array
     }
   }
 });
@@ -487,7 +503,9 @@ __webpack_require__.r(__webpack_exports__);
       // console.log(operator);
       this.$emit('operator', operator);
     },
-    evaluate: function evaluate() {}
+    evaluate: function evaluate() {
+      this.$emit('evaluate');
+    }
   }
 });
 
@@ -1723,9 +1741,15 @@ var render = function() {
     "div",
     { attrs: { id: "app" } },
     [
-      _c("display", { attrs: { number1: _vm.number1 } }),
+      _c("display", { attrs: { numbers: _vm.numbers } }),
       _vm._v(" "),
-      _c("keypad", { on: { number: _vm.concatNumber } })
+      _c("keypad", {
+        on: {
+          number: _vm.concatNumber,
+          operator: _vm.addOperator,
+          evaluate: _vm.evaluate
+        }
+      })
     ],
     1
   )
@@ -1752,7 +1776,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("span", [_vm._v(_vm._s(_vm.number1))])])
+  return _c("div", [_c("span", [_vm._v(_vm._s(_vm.numbers))])])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -1948,7 +1972,6 @@ var render = function() {
     _c(
       "button",
       {
-        attrs: { operation: "evaluate" },
         on: {
           click: function($event) {
             _vm.evaluate()

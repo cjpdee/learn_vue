@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span>{{ number1 }}</span>
+        <span>{{ numbers }}</span>
     </div>
 </template>
 
@@ -10,8 +10,8 @@
 export default {
     name : "display",
     props : {
-        number1: {
-            type: String
+        numbers: {
+            type: Array
         }
     }
 }

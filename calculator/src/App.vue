@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-        <display v-bind:number1="number1"></display>
-        <keypad v-on:number="concatNumber"></keypad>
+        <display v-bind:numbers="numbers"></display>
+        <keypad v-on:number="concatNumber" v-on:operator="addOperator" v-on:evaluate="evaluate"></keypad>
     </div>
 </template>
 
@@ -18,18 +18,33 @@ export default {
     },
     data() {
         return {
-            number1 : '',
-            number2 : '',
-            operator: '',
-
-            decimalPressed: false
+            currentNumber: '',
+            numbers : [],
+            operators: []
         }
     },
     methods: {
         concatNumber(number) {
-            console.log('at app',number);
-            this.number1 = this.number1 + number.toString();
-            console.log(this.number1);
+            if(number == '.') {
+                if(this.currentNumber.indexOf('.') > -1) {
+                    return
+                } else {
+                    this.currentNumber = this.currentNumber + number;
+                }
+            } else {
+                this.currentNumber = this.currentNumber + number.toString();
+            }
+            console.log('number: ',this.currentNumber);
+            console.log('index: ',this.currentNumber.indexOf('.'));
+        },
+        addOperator(operator) {
+            this.numbers.push(parseFloat(this.currentNumber));
+            this.operators.push(operator);
+            this.currentNumber = '';
+            console.log(this.numbers);
+        },
+        evaluate() {
+            console.log(this.numbers,this.operators);
         }
     }
 }
