@@ -404,8 +404,21 @@ __webpack_require__.r(__webpack_exports__);
       operators: []
     };
   },
+  computed: {
+    currentOperation: function currentOperation() {
+      var fullOperation = '';
+
+      for (var i = 0; i < this.numbers.length; i++) {
+        fullOperation = fullOperation + this.numbers[i];
+        this.operators[i] && (fullOperation = fullOperation + this.operators[i]);
+      }
+
+      console.log(fullOperation);
+      return fullOperation;
+    }
+  },
   methods: {
-    concatNumber: function concatNumber(number) {
+    addNumber: function addNumber(number) {
       if (number == '.') {
         if (this.currentNumber.indexOf('.') > -1) {
           return;
@@ -415,18 +428,45 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.currentNumber = this.currentNumber + number.toString();
       }
-
-      console.log('number: ', this.currentNumber);
-      console.log('index: ', this.currentNumber.indexOf('.'));
+    },
+    existsCurrentNumber: function existsCurrentNumber() {
+      return this.currentNumber.length > 0 ? true : false;
+    },
+    pushNumber: function pushNumber(number) {
+      this.numbers.push(parseFloat(this.currentNumber));
+      this.currentNumber = '';
     },
     addOperator: function addOperator(operator) {
-      this.numbers.push(parseFloat(this.currentNumber));
-      this.operators.push(operator);
-      this.currentNumber = '';
-      console.log(this.numbers);
+      if (this.existsCurrentNumber()) {
+        console.log(this.existsCurrentNumber());
+        this.pushNumber(this.currentNumber);
+        this.operators.push(operator);
+        console.log(this.numbers);
+      } else {
+        console.log(this.existsCurrentNumber());
+        console.log('addOperator: No number given to operate on');
+      }
     },
     evaluate: function evaluate() {
-      console.log(this.numbers, this.operators);
+      if (this.numbers.length >= 2 || this.numbers.length == 1 && this.existsCurrentNumber()) {
+        this.pushNumber(this.currentNumber);
+        console.log(this.numbers.length, this.operators.length);
+
+        if (this.numbers.length <= this.operators.length) {
+          console.log('evaluate: The operation needs another number');
+        } else {
+          for (var i = 0; i < this.numbers.length; i++) {
+            console.log(this.numbers[i], this.operators[i]);
+          }
+        }
+      } else {
+        console.log('Operation cannot be evaluated');
+      }
+    },
+    reset: function reset() {
+      this.currentNumber = '';
+      this.numbers = [];
+      this.operators = [];
     }
   }
 });
@@ -449,11 +489,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "display",
   props: {
-    numbers: {
-      type: Array
+    operation: {
+      type: String
+    },
+    currentNumber: {
+      type: String
+    }
+  },
+  methods: {
+    reset: function reset() {
+      this.$emit('reset');
     }
   }
 });
@@ -542,7 +591,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\ndiv[data-v-489a3a63] {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n    flex: 0 0 20vh;\n    width: 100%;\n    background-color: rgb(56, 56, 56);\n}\nspan[data-v-489a3a63] {\n    margin-right: 40px;\n    font-size: 96px;\n    font-family: monospace;\n    text-align: right;\n    color: rgb(25, 155, 25);\n}\n\n", ""]);
+exports.push([module.i, "\ndiv[data-v-489a3a63] {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n    flex: 0 0 20vh;\n    width: 100%;\n    background-color: rgb(39, 39, 39);\n}\ndiv[data-v-489a3a63]:hover {\n    background-color: rgb(56, 56, 56);\n}\nspan[data-v-489a3a63] {\n    display: inline-block;\n    width: 100%;\n    margin-left: 40px;\n    font-size: 60px;\n    font-family: monospace;\n    text-align: left;\n    color: rgb(25, 155, 25);\n}\nspan[data-v-489a3a63]:last-child {\n    margin-right: 40px;\n    font-size: 96px;\n    text-align: right;\n}\n\n", ""]);
 
 // exports
 
@@ -1741,11 +1790,17 @@ var render = function() {
     "div",
     { attrs: { id: "app" } },
     [
-      _c("display", { attrs: { numbers: _vm.numbers } }),
+      _c("display", {
+        attrs: {
+          operation: _vm.currentOperation,
+          currentNumber: _vm.currentNumber
+        },
+        on: { reset: _vm.reset }
+      }),
       _vm._v(" "),
       _c("keypad", {
         on: {
-          number: _vm.concatNumber,
+          number: _vm.addNumber,
           operator: _vm.addOperator,
           evaluate: _vm.evaluate
         }
@@ -1776,7 +1831,11 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("span", [_vm._v(_vm._s(_vm.numbers))])])
+  return _c("div", { on: { click: _vm.reset } }, [
+    _c("span", [_vm._v(_vm._s(_vm.operation))]),
+    _vm._v(" "),
+    _c("span", [_vm._v(_vm._s(_vm.currentNumber))])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -1842,7 +1901,7 @@ var render = function() {
       {
         on: {
           click: function($event) {
-            _vm.pressOperator("subtract")
+            _vm.pressOperator("-")
           }
         }
       },
@@ -1890,7 +1949,7 @@ var render = function() {
       {
         on: {
           click: function($event) {
-            _vm.pressOperator("add")
+            _vm.pressOperator("+")
           }
         }
       },
@@ -1938,7 +1997,7 @@ var render = function() {
       {
         on: {
           click: function($event) {
-            _vm.pressOperator("multiply")
+            _vm.pressOperator("*")
           }
         }
       },
@@ -1986,7 +2045,7 @@ var render = function() {
       {
         on: {
           click: function($event) {
-            _vm.pressOperator("divide")
+            _vm.pressOperator("/")
           }
         }
       },

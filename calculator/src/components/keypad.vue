@@ -3,19 +3,19 @@
         <button @click="pressNumber(1)">1</button>
         <button @click="pressNumber(2)">2</button>
         <button @click="pressNumber(3)">3</button>
-        <button @click="pressOperator('subtract')">-</button>
+        <button @click="pressOperator('-')">-</button>
         <button @click="pressNumber(4)">4</button>
         <button @click="pressNumber(5)">5</button>
         <button @click="pressNumber(6)">6</button>
-        <button @click="pressOperator('add')">+</button>
+        <button @click="pressOperator('+')">+</button>
         <button @click="pressNumber(7)">7</button>
         <button @click="pressNumber(8)">8</button>
         <button @click="pressNumber(9)">9</button>
-        <button @click="pressOperator('multiply')">*</button>
+        <button @click="pressOperator('*')">*</button>
         <button @click="pressNumber('.')">.</button>
         <button @click="pressNumber(0)">0</button>
         <button @click="evaluate()">=</button>
-        <button @click="pressOperator('divide')">/</button>
+        <button @click="pressOperator('/')">/</button>
     </div>
 </template>
 
