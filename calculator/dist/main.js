@@ -418,7 +418,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    addNumber: function addNumber(number) {
+    buildNumber: function buildNumber(number) {
       if (number == '.') {
         if (this.currentNumber.indexOf('.') > -1) {
           return;
@@ -447,7 +447,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log('addOperator: No number given to operate on');
       }
     },
-    evaluate: function evaluate() {
+    validateOperation: function validateOperation() {
       if (this.numbers.length >= 2 || this.numbers.length == 1 && this.existsCurrentNumber()) {
         this.pushNumber(this.currentNumber);
         console.log(this.numbers.length, this.operators.length);
@@ -455,13 +455,49 @@ __webpack_require__.r(__webpack_exports__);
         if (this.numbers.length <= this.operators.length) {
           console.log('evaluate: The operation needs another number');
         } else {
-          for (var i = 0; i < this.numbers.length; i++) {
-            console.log(this.numbers[i], this.operators[i]);
-          }
+          // actual logic here
+          this.evaluate();
         }
       } else {
         console.log('Operation cannot be evaluated');
       }
+    },
+    evaluate: function evaluate() {
+      var _this = this;
+
+      for (var i = 0; i < this.numbers.length; i++) {
+        console.log(this.numbers[i], this.operators[i]);
+      }
+
+      var orderOfOperations = ['/', '*', '+', '-'];
+      var newOrder = [];
+      orderOfOperations.forEach(function (operator) {
+        var index = _this.operators.indexOf(operator);
+
+        if (index >= 0) {
+          console.log("Operator " + operator + " got through");
+          var orderedOperations = [];
+
+          var operation = _this.numbers[index].toString() + _this.operators[index] + _this.numbers[index + 1].toString();
+
+          console.log('op', operation);
+          console.log('op  index', _this.operators[index]);
+          console.log('num index', _this.numbers[index]);
+          console.log('num index', _this.numbers[index + 1]); // orderedOperations.push(operation)
+
+          var orderOfOperationsIndex = orderOfOperations.indexOf(_this.operators[index]);
+          console.log(orderOfOperationsIndex);
+          newOrder[orderOfOperationsIndex] = operation;
+          console.log(newOrder);
+        }
+
+        console.log('index', index);
+      }); // division
+      // multiplication
+      // addition
+      // subtraction
+
+      this.currentNumber = '42';
     },
     reset: function reset() {
       this.currentNumber = '';
@@ -1800,9 +1836,9 @@ var render = function() {
       _vm._v(" "),
       _c("keypad", {
         on: {
-          number: _vm.addNumber,
+          number: _vm.buildNumber,
           operator: _vm.addOperator,
-          evaluate: _vm.evaluate
+          evaluate: _vm.validateOperation
         }
       })
     ],
