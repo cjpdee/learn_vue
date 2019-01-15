@@ -1,11 +1,11 @@
 const mix = require('laravel-mix');
 
-mix.js(`sliders/app.js`, `dist/app.js`);
+mix.js(`calculator/src/main.js`, `calculator/dist/main.js`);
 
-mix.copy(`sliders/index.html`, `dist/index.html`);
+// mix.copy(`fccTut/index.html`, `dist/index.html`);
 
 mix.browserSync({
 	proxy: '',
-	server: 'dist/',
-	files: ['sliders/*/*/*'],
+	server: 'calculator/',
+	files: ['calculator/src/*/*'],
 });
